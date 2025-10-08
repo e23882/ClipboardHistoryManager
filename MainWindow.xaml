@@ -6,53 +6,112 @@
     xmlns:local="clr-namespace:ClipboardHistoryManager"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:ClipboardHistoryManager.ViewModels"
-    Title="Clipboard History"
-    Width="350"
-    Height="400"
+    Title="J.A.R.V.I.S. Clipboard"
+    Width="400"
+    Height="450"
     AllowsTransparency="True"
     Background="Transparent"
+    FontFamily="Segoe UI Light"
     Topmost="True"
     WindowStyle="None"
     mc:Ignorable="d">
     <Window.Resources>
+        <!--  Iron Man UI Color Palette  -->
+        <Color x:Key="IronManGlowColor">#FF33FFFF</Color>
+        <!--  Brighter Blue  -->
+        <Color x:Key="IronManBackgroundColor">#FF000000</Color>
+        <SolidColorBrush x:Key="IronManGlowBrush" Color="{StaticResource IronManGlowColor}" />
         <SolidColorBrush
             x:Key="WindowBackgroundBrush"
-            Opacity="1.0"
-            Color="#F0F0F0" />
+            Opacity="0.85"
+            Color="{StaticResource IronManBackgroundColor}" />
+        <!--  Fixed Opacity  -->
+
+        <!--  Glow Effect  -->
+        <DropShadowEffect
+            x:Key="GlowEffect"
+            BlurRadius="2"
+            ShadowDepth="0"
+            Color="{StaticResource IronManGlowColor}" />
+
+        <!--  Base Style for Glowing Text  -->
+        <Style x:Key="GlowTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource IronManGlowBrush}" />
+            <Setter Property="Effect" Value="{StaticResource GlowEffect}" />
+        </Style>
+
+        <!--  Style for Buttons  -->
+        <Style x:Key="IronManButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource IronManGlowBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{StaticResource IronManGlowBrush}" />
+            <Setter Property="Effect" Value="{StaticResource GlowEffect}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            Background="Transparent"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="3">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
+
     <Window.DataContext>
         <viewModels:MainViewModel />
     </Window.DataContext>
+
     <Border
-        BorderBrush="Gray"
+        BorderBrush="{StaticResource IronManGlowBrush}"
         BorderThickness="1"
-        CornerRadius="5">
+        CornerRadius="5"
+        Effect="{StaticResource GlowEffect}">
         <Grid Background="{StaticResource WindowBackgroundBrush}" MouseLeftButtonDown="Grid_MouseLeftButtonDown">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+
+            <Button
+                Margin="0,5,5,0"
+                Padding="5"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Click="CloseButton_Click"
+                Content=" Ｘ "
+                Style="{StaticResource IronManButtonStyle}" />
 
             <ListBox
-                Grid.Row="0"
+                Margin="0,25,0,0"
                 HorizontalContentAlignment="Stretch"
                 Background="Transparent"
                 BorderThickness="0"
                 ItemsSource="{Binding ClipboardHistory}"
-                ScrollViewer.VerticalScrollBarVisibility="Auto">
+                ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                ScrollViewer.VerticalScrollBarVisibility="Hidden">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="Background" Value="Transparent" />
                         <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <ContentPresenter />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
                     </Style>
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Border
-                            Padding="5"
-                            BorderBrush="Gray"
-                            BorderThickness="0,0,0,1">
-                            <Grid>
+                            Margin="5,2"
+                            BorderBrush="{StaticResource IronManGlowBrush}"
+                            BorderThickness="0,0,0,0.5"
+                            Opacity="0.7">
+                            <Grid Margin="5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
@@ -60,20 +119,28 @@
 
                                 <Button
                                     Grid.Column="0"
-                                    Width="15"
-                                    Height="15"
+                                    Width="25"
+                                    Height="25"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                     CommandParameter="{Binding}"
                                     Content="X"
-                                    FontWeight="Bold"
-                                    Foreground="Red" />
+                                    FontWeight="Normal"
+                                    Foreground="{StaticResource IronManGlowBrush}">
+                                    <Button.Effect>
+                                        <DropShadowEffect
+                                            BlurRadius="5"
+                                            ShadowDepth="0"
+                                            Color="{StaticResource IronManGlowColor}" />
+                                    </Button.Effect>
+                                </Button>
 
                                 <TextBlock
                                     Grid.Column="1"
                                     Margin="5,0"
                                     VerticalAlignment="Center"
+                                    Style="{StaticResource GlowTextStyle}"
                                     Text="{Binding Text}"
                                     TextTrimming="CharacterEllipsis" />
                             </Grid>
@@ -81,29 +148,6 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-
-            <StackPanel
-                Grid.Row="1"
-                Margin="10,5"
-                Orientation="Horizontal">
-                <TextBlock
-                    Margin="0,0,5,0"
-                    VerticalAlignment="Center"
-                    Text="Opacity:" />
-                <Slider
-                    x:Name="OpacitySlider"
-                    Width="150"
-                    VerticalAlignment="Center"
-                    Maximum="1.0"
-                    Minimum="0.2"
-                    Value="{Binding Source={StaticResource WindowBackgroundBrush}, Path=Opacity, Mode=TwoWay}" />
-                <Button
-                    Margin="20,0,0,0"
-                    Click="CloseButton_Click"
-                    Background="Transparent"
-                    BorderBrush="DarkGray"
-                    Content="Close" Padding="15,3"/>
-            </StackPanel>
         </Grid>
     </Border>
 </Window>
