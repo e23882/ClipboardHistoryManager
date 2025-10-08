@@ -11,7 +11,9 @@
     Height="450"
     AllowsTransparency="True"
     Background="Transparent"
+    Closing="Window_Closing"
     FontFamily="Segoe UI Light"
+    Loaded="Window_Loaded"
     Topmost="True"
     WindowStyle="None"
     mc:Ignorable="d">
@@ -23,14 +25,14 @@
         <SolidColorBrush x:Key="IronManGlowBrush" Color="{StaticResource IronManGlowColor}" />
         <SolidColorBrush
             x:Key="WindowBackgroundBrush"
-            Opacity="0.85"
+            Opacity="0.6"
             Color="{StaticResource IronManBackgroundColor}" />
         <!--  Fixed Opacity  -->
 
         <!--  Glow Effect  -->
         <DropShadowEffect
             x:Key="GlowEffect"
-            BlurRadius="2"
+            BlurRadius="1"
             ShadowDepth="0"
             Color="{StaticResource IronManGlowColor}" />
 
@@ -70,17 +72,19 @@
     <Border
         BorderBrush="{StaticResource IronManGlowBrush}"
         BorderThickness="1"
-        CornerRadius="5"
+        CornerRadius="15"
         Effect="{StaticResource GlowEffect}">
         <Grid Background="{StaticResource WindowBackgroundBrush}" MouseLeftButtonDown="Grid_MouseLeftButtonDown">
 
             <Button
-                Margin="0,5,5,0"
-                Padding="5"
+                Margin="0,10,10,0"
+                Padding="10"
+                Width="20"
+                Height="20"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Click="CloseButton_Click"
-                Content=" Ｘ "
+                Content="X"
                 Style="{StaticResource IronManButtonStyle}" />
 
             <ListBox

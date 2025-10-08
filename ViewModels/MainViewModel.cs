@@ -1,5 +1,7 @@
 
 using ClipboardHistoryManager.Models;
+using Notifications.Wpf;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -25,11 +27,9 @@ namespace ClipboardHistoryManager.ViewModels
             if (string.IsNullOrEmpty(text))
                 return;
 
-            // Optional: Prevent adding duplicates
             var existing = ClipboardHistory.FirstOrDefault(i => i.Text == text);
             if (existing != null)
             {
-                // Move existing to top
                 ClipboardHistory.Remove(existing);
                 ClipboardHistory.Insert(0, existing);
                 return;
@@ -43,12 +43,22 @@ namespace ClipboardHistoryManager.ViewModels
             ClipboardHistory.Insert(0, new ClipboardItem(text));
         }
 
+        public void LoadHistory(IEnumerable<string> history)
+        {
+            ClipboardHistory.Clear();
+            foreach (var text in history)
+            {
+                ClipboardHistory.Add(new ClipboardItem(text));
+            }
+        }
+
         private void CopyItem(object? parameter)
         {
             if (parameter is ClipboardItem item)
             {
                 try
                 {
+                    Notify("複製成功", "Notify", NotificationType.Information);
                     Clipboard.SetText(item.Text);
                 }
                 catch
@@ -64,6 +74,12 @@ namespace ClipboardHistoryManager.ViewModels
             {
                 ClipboardHistory.Remove(item);
             }
+        }
+
+        public static void Notify(string message, string title = "Notify", NotificationType type = NotificationType.Information)
+        {
+            var notificationManager = new NotificationManager();
+            notificationManager.Show(new NotificationContent { Title = title, Message = message, Type = type, }, "");
         }
     }
 }

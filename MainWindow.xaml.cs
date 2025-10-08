@@ -1,8 +1,12 @@
 using System;
+using System.ComponentModel;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using ClipboardHistoryManager.Models;
+using ClipboardHistoryManager.Services;
 using ClipboardHistoryManager.ViewModels;
 
 namespace ClipboardHistoryManager
@@ -89,6 +93,25 @@ namespace ClipboardHistoryManager
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            var settings = SettingsService.Load();
+            this.Top = settings.WindowTop;
+            this.Left = settings.WindowLeft;
+            _viewModel.LoadHistory(settings.History);
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            var settings = new Settings
+            {
+                WindowTop = this.Top,
+                WindowLeft = this.Left,
+                History = _viewModel.ClipboardHistory.Select(item => item.Text).ToList()
+            };
+            SettingsService.Save(settings);
         }
     }
 }
