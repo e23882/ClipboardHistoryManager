@@ -5,6 +5,8 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media.Animation;
+using System.Windows.Controls;
 using ClipboardHistoryManager.Models;
 using ClipboardHistoryManager.Services;
 using ClipboardHistoryManager.ViewModels;
@@ -14,6 +16,8 @@ namespace ClipboardHistoryManager
     public partial class MainWindow : Window
     {
         private MainViewModel _viewModel;
+        private Storyboard _glitchStoryboard;
+        private bool _isDragging = false;
 
         public MainWindow()
         {
@@ -85,9 +89,7 @@ namespace ClipboardHistoryManager
         private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ButtonState == MouseButtonState.Pressed)
-            {
                 DragMove();
-            }
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -97,21 +99,28 @@ namespace ClipboardHistoryManager
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            _glitchStoryboard = (Storyboard)this.FindResource("GlitchAnimation");
             var settings = SettingsService.Load();
             this.Top = settings.WindowTop;
             this.Left = settings.WindowLeft;
             _viewModel.LoadHistory(settings.History);
         }
 
-        private void Window_Closing(object sender, CancelEventArgs e)
+        private void MainGrid_MouseEnter(object sender, MouseEventArgs e)
         {
-            var settings = new Settings
-            {
-                WindowTop = this.Top,
-                WindowLeft = this.Left,
-                History = _viewModel.ClipboardHistory.Select(item => item.Text).ToList()
-            };
-            SettingsService.Save(settings);
+            SpotlightLight.Visibility = Visibility.Visible;
+        }
+
+        private void MainGrid_MouseLeave(object sender, MouseEventArgs e)
+        {
+            SpotlightLight.Visibility = Visibility.Collapsed;
+        }
+
+        private void MainGrid_MouseMove(object sender, MouseEventArgs e)
+        {
+            Point pos = e.GetPosition(MainGrid);
+            Canvas.SetLeft(SpotlightLight, pos.X - (SpotlightLight.ActualWidth / 2));
+            Canvas.SetTop(SpotlightLight, pos.Y - (SpotlightLight.ActualHeight / 2));
         }
     }
 }

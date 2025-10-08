@@ -7,11 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:ClipboardHistoryManager.ViewModels"
     Title="J.A.R.V.I.S. Clipboard"
-    Width="400"
+    Width="600"
     Height="450"
     AllowsTransparency="True"
     Background="Transparent"
-    Closing="Window_Closing"
     FontFamily="Segoe UI Light"
     Loaded="Window_Loaded"
     Topmost="True"
@@ -22,7 +21,11 @@
         <Color x:Key="IronManGlowColor">#FF33FFFF</Color>
         <!--  Brighter Blue  -->
         <Color x:Key="IronManBackgroundColor">#FF000000</Color>
+        <Color x:Key="BrighterGlowColor">#FFFFFFFF</Color>
+        <SolidColorBrush x:Key="BrighterGlowBrush" Color="{StaticResource BrighterGlowColor}" />
         <SolidColorBrush x:Key="IronManGlowBrush" Color="{StaticResource IronManGlowColor}" />
+        <SolidColorBrush x:Key="SmallScaleBrush" Color="White" />
+        <SolidColorBrush x:Key="LargeScaleBrush" Color="Red" />
         <SolidColorBrush
             x:Key="WindowBackgroundBrush"
             Opacity="0.6"
@@ -32,13 +35,13 @@
         <!--  Glow Effect  -->
         <DropShadowEffect
             x:Key="GlowEffect"
-            BlurRadius="1"
+            BlurRadius="0"
             ShadowDepth="0"
             Color="{StaticResource IronManGlowColor}" />
 
         <!--  Base Style for Glowing Text  -->
         <Style x:Key="GlowTextStyle" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{StaticResource IronManGlowBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource BrighterGlowBrush}" />
             <Setter Property="Effect" Value="{StaticResource GlowEffect}" />
         </Style>
 
@@ -63,95 +66,788 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Storyboard x:Key="GlitchAnimation">
+            <!--  Glitch Line 1 Animation  -->
+            <DoubleAnimationUsingKeyFrames
+                RepeatBehavior="Forever"
+                Storyboard.TargetName="GlitchLine1"
+                Storyboard.TargetProperty="(Canvas.Top)"
+                Duration="0:0:0.5">
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.0" Value="50" />
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.1" Value="150" />
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.2" Value="80" />
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.3" Value="250" />
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.4" Value="120" />
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames
+                RepeatBehavior="Forever"
+                Storyboard.TargetName="GlitchLine1"
+                Storyboard.TargetProperty="Opacity"
+                Duration="0:0:0.5">
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.0" Value="0.8" />
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.05" Value="0.3" />
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.1" Value="1.0" />
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.2" Value="0.5" />
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.3" Value="0.9" />
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.4" Value="0.2" />
+            </DoubleAnimationUsingKeyFrames>
+
+            <!--  Glitch Line 2 Animation  -->
+            <DoubleAnimationUsingKeyFrames
+                RepeatBehavior="Forever"
+                Storyboard.TargetName="GlitchLine2"
+                Storyboard.TargetProperty="(Canvas.Top)"
+                Duration="0:0:0.4">
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.0" Value="200" />
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.1" Value="30" />
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.2" Value="180" />
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.3" Value="90" />
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimation
+                AutoReverse="True"
+                RepeatBehavior="Forever"
+                Storyboard.TargetName="GlitchLine2"
+                Storyboard.TargetProperty="Opacity"
+                From="0.1"
+                To="0.7"
+                Duration="0:0:0.2" />
+
+            <!--  Glitch Line 3 Animation  -->
+            <DoubleAnimationUsingKeyFrames
+                RepeatBehavior="Forever"
+                Storyboard.TargetName="GlitchLine3"
+                Storyboard.TargetProperty="(Canvas.Top)"
+                Duration="0:0:0.6">
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.0" Value="100" />
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.15" Value="220" />
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.3" Value="40" />
+                <DiscreteDoubleKeyFrame KeyTime="0:0:0.45" Value="300" />
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
     </Window.Resources>
+
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation
+                        RepeatBehavior="Forever"
+                        Storyboard.TargetName="BrushTransform"
+                        Storyboard.TargetProperty="Angle"
+                        From="0"
+                        To="360"
+                        Duration="0:0:10" />
+                    <DoubleAnimation
+                        AutoReverse="True"
+                        RepeatBehavior="Forever"
+                        Storyboard.TargetName="RulerTranslateTransform"
+                        Storyboard.TargetProperty="Y"
+                        From="0"
+                        To="-50"
+                        Duration="0:0:2" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
 
     <Window.DataContext>
         <viewModels:MainViewModel />
     </Window.DataContext>
 
-    <Border
-        BorderBrush="{StaticResource IronManGlowBrush}"
-        BorderThickness="1"
-        CornerRadius="15"
-        Effect="{StaticResource GlowEffect}">
-        <Grid Background="{StaticResource WindowBackgroundBrush}" MouseLeftButtonDown="Grid_MouseLeftButtonDown">
+    <Grid>
+        <!--  Static Base Border  -->
+        <Border
+            BorderBrush="{StaticResource IronManGlowBrush}"
+            BorderThickness="2"
+            CornerRadius="15"
+            Effect="{StaticResource GlowEffect}" />
 
-            <Button
-                Margin="0,10,10,0"
-                Padding="10"
-                Width="20"
-                Height="20"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Click="CloseButton_Click"
-                Content="X"
-                Style="{StaticResource IronManButtonStyle}" />
+        <!--  Animated Top Border with Content  -->
+        <Border
+            Name="MainBorder"
+            BorderThickness="2"
+            CornerRadius="15">
+            <Border.BorderBrush>
+                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                    <LinearGradientBrush.RelativeTransform>
+                        <RotateTransform x:Name="BrushTransform" CenterX="0.5" CenterY="0.5" />
+                    </LinearGradientBrush.RelativeTransform>
+                    <GradientStop Offset="0" Color="Transparent" />
+                    <GradientStop Offset="0.5" Color="{StaticResource BrighterGlowColor}" />
+                    <GradientStop Offset="1" Color="Transparent" />
+                </LinearGradientBrush>
+            </Border.BorderBrush>
+            <Grid
+                x:Name="MainGrid"
+                Background="{StaticResource WindowBackgroundBrush}"
+                MouseEnter="MainGrid_MouseEnter"
+                MouseLeave="MainGrid_MouseLeave"
+                MouseLeftButtonDown="Grid_MouseLeftButtonDown"
+                MouseMove="MainGrid_MouseMove">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                    <!--  Ruler column  -->
+                </Grid.ColumnDefinitions>
 
-            <ListBox
-                Margin="0,25,0,0"
-                HorizontalContentAlignment="Stretch"
-                Background="Transparent"
-                BorderThickness="0"
-                ItemsSource="{Binding ClipboardHistory}"
-                ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                ScrollViewer.VerticalScrollBarVisibility="Hidden">
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="Background" Value="Transparent" />
-                        <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ListBoxItem">
-                                    <ContentPresenter />
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ListBox.ItemContainerStyle>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Border
-                            Margin="5,2"
-                            BorderBrush="{StaticResource IronManGlowBrush}"
-                            BorderThickness="0,0,0,0.5"
-                            Opacity="0.7">
-                            <Grid Margin="5">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
+                <Button
+                    Grid.Column="0"
+                    Width="20"
+                    Height="20"
+                    Margin="0,10,10,0"
+                    Padding="10"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Click="CloseButton_Click"
+                    Content="X"
+                    Style="{StaticResource IronManButtonStyle}" />
 
-                                <Button
-                                    Grid.Column="0"
-                                    Width="25"
-                                    Height="25"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                    CommandParameter="{Binding}"
-                                    Content="X"
-                                    FontWeight="Normal"
-                                    Foreground="{StaticResource IronManGlowBrush}">
-                                    <Button.Effect>
-                                        <DropShadowEffect
-                                            BlurRadius="5"
-                                            ShadowDepth="0"
-                                            Color="{StaticResource IronManGlowColor}" />
-                                    </Button.Effect>
-                                </Button>
+                <ListBox
+                    Grid.Column="0"
+                    Margin="0,25,0,0"
+                    HorizontalContentAlignment="Stretch"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    ItemsSource="{Binding ClipboardHistory}"
+                    ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                    ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Background" Value="Transparent" />
+                            <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Margin="5,2"
+                                BorderBrush="{StaticResource IronManGlowBrush}"
+                                BorderThickness="0,0,0,0.5"
+                                Opacity="0.7">
+                                <Grid Margin="5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
-                                <TextBlock
-                                    Grid.Column="1"
-                                    Margin="5,0"
-                                    VerticalAlignment="Center"
-                                    Style="{StaticResource GlowTextStyle}"
-                                    Text="{Binding Text}"
-                                    TextTrimming="CharacterEllipsis" />
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Grid>
-    </Border>
+                                    <Button
+                                        Grid.Column="0"
+                                        Width="35"
+                                        Height="25"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                        CommandParameter="{Binding}"
+                                        Content="X"
+                                        FontWeight="Normal"
+                                        Foreground="{StaticResource IronManGlowBrush}">
+                                        <Button.Effect>
+                                            <DropShadowEffect
+                                                BlurRadius="5"
+                                                ShadowDepth="0"
+                                                Color="{StaticResource IronManGlowColor}" />
+                                        </Button.Effect>
+                                    </Button>
+
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        Margin="5,0"
+                                        VerticalAlignment="Center"
+                                        Style="{StaticResource GlowTextStyle}"
+                                        Text="{Binding Text}"
+                                        TextTrimming="CharacterEllipsis" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!--  Glitch Effect Overlay  -->
+                <Canvas
+                    x:Name="GlitchCanvas"
+                    Grid.Column="0"
+                    IsHitTestVisible="False"
+                    Visibility="Collapsed">
+                    <Rectangle
+                        x:Name="GlitchLine1"
+                        Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Canvas}}"
+                        Height="2"
+                        Fill="{StaticResource BrighterGlowBrush}" />
+                    <Rectangle
+                        x:Name="GlitchLine2"
+                        Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Canvas}}"
+                        Height="1"
+                        Fill="{StaticResource IronManGlowBrush}"
+                        Opacity="0.5" />
+                    <Rectangle
+                        x:Name="GlitchLine3"
+                        Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Canvas}}"
+                        Height="3"
+                        Fill="{StaticResource BrighterGlowBrush}" />
+
+                    <!--  Spotlight Effect  -->
+                    <Ellipse
+                        x:Name="SpotlightLight"
+                        Width="150"
+                        Height="150"
+                        IsHitTestVisible="False"
+                        Visibility="Collapsed">
+                        <Ellipse.Fill>
+                            <RadialGradientBrush>
+                                <GradientStop Offset="0.0" Color="{StaticResource BrighterGlowColor}" />
+                                <GradientStop Offset="1.0" Color="Transparent" />
+                            </RadialGradientBrush>
+                        </Ellipse.Fill>
+                        <Ellipse.Effect>
+                            <BlurEffect Radius="30" />
+                        </Ellipse.Effect>
+                    </Ellipse>
+                </Canvas>
+
+                <!--  Ruler  -->
+                <Grid
+                    x:Name="RulerContainer"
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Stretch">
+                    <Grid.RenderTransform>
+                        <TranslateTransform x:Name="RulerTranslateTransform" Y="0" />
+                    </Grid.RenderTransform>
+                    <StackPanel VerticalAlignment="Bottom" Orientation="Vertical">
+                        <!--  Generate 50 marks for the ruler  -->
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="35"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource LargeScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="35"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource LargeScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="35"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource LargeScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="35"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource LargeScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="35"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource LargeScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="35"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource LargeScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="35"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource LargeScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="35"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource LargeScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="10"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource SmallScaleBrush}"
+                            Opacity="0.3" />
+                        <Rectangle
+                            Width="35"
+                            Height="1"
+                            Margin="0,2,0,2"
+                            Fill="{StaticResource LargeScaleBrush}"
+                            Opacity="0.3" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
 </Window>
