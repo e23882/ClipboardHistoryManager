@@ -7,5 +7,6 @@ namespace ClipboardHistoryManager.Models
         public double WindowTop { get; set; } = 100;
         public double WindowLeft { get; set; } = 100;
         public List<string> History { get; set; } = new List<string>();
+        public double FontSize { get; set; } = 14;
     }
 }
