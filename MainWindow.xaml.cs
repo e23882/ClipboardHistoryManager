@@ -27,7 +27,10 @@ namespace ClipboardHistoryManager
         public MainWindow()
         {
             InitializeComponent();
-            _viewModel = (MainViewModel)DataContext;
+            var clipboardService = new WpfClipboardService();
+            var notificationService = new WpfNotificationService();
+            _viewModel = new MainViewModel(clipboardService, notificationService);
+            DataContext = _viewModel;
             _viewModel.OnCopySuccess += ViewModel_OnCopySuccess;
         }
         #endregion
